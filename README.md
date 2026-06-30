@@ -29,7 +29,7 @@ The platform is designed as a localized container monolith (Service Mesh Monolit
 ## Sibling Repositories
 The core ecosystem is decoupled across distinct, agnostic portfolio repositories:
 * **Core Flag Engine (Go):** [flagship](https://github.com/NGUgeneral/flagship)
-* **Auth Authority (Node/JS):** [jwt-authority](https://github.com/NGUgeneral/jwt-authority)
+* **Auth Authority (Python/FastAPI):** [jwt-authority](https://github.com/NGUgeneral/jwt-authority)
 * **Rate Limiter (Python/FastAPI):** [rate-limiter](https://github.com/NGUgeneral/rate-limiter)
 
 ## Local Development Setup
