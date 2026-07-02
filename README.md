@@ -1,12 +1,12 @@
-# Flagship Platform (`flagship-platform`)
+# `headsntails` Platform (`headsntails-platform`)
 
-This repository serves as the centralized orchestration and infrastructure hub for the **Flagship Ecosystem**—a high-performance, containerized multi-service feature flag evaluation platform. 
+This repository serves as the centralized orchestration and infrastructure hub for the **`headsntails` Ecosystem** - a high-performance, containerized multi-service feature flag evaluation platform. 
 
 It handles local multi-container composition, internal isolated networking, edge proxy routing, and local state initialization.
 
 ## System Architecture & Network Topology
 
-The platform is designed as a localized container monolith (Service Mesh Monolith). The public internet can only access the ecosystem through the Nginx Edge Ingress. All inter-service communications happen exclusively over an isolated private Docker bridge network (`flagship-intranet`).
+The platform is designed as a localized container monolith (Service Mesh Monolith). The public internet can only access the ecosystem through the Nginx Edge Ingress. All inter-service communications happen exclusively over an isolated private Docker bridge network (`headsntails-intranet`).
 
 ```text
                   [ PUBLIC TRAFFIC ]
@@ -17,7 +17,7 @@ The platform is designed as a localized container monolith (Service Mesh Monolit
       /api/v1/flags/  /api/v1/auth/  /api/v1/limiter/
              /            │            \ (Restricted)
             ▼             ▼             ▼
-     [Flagship Core] [JWT Authority] [Rate Limiter]
+       [headsntails Core] [JWT Authority] [Rate Limiter]
         (Go:8080)     (Python:3000)   (Python:8000)
          │    │                             │
          │    └─────────(Intranet)──────────┤
@@ -30,7 +30,7 @@ The platform is designed as a localized container monolith (Service Mesh Monolit
 
 ## Architectural Roadmap & Evolution Strategy
 
-The Flagship ecosystem is built using a milestone-driven evolution layout. Each phase transitions the ecosystem into higher performance brackets, systematically identifying and resolving distributed systems bottlenecks.
+The `headsntails` ecosystem is built using a milestone-driven evolution layout. Each phase transitions the ecosystem into higher performance brackets, systematically identifying and resolving distributed systems bottlenecks.
 
 | Phase | Milestone | Core Focus | Architecture Impact | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -46,7 +46,7 @@ The Flagship ecosystem is built using a milestone-driven evolution layout. Each 
 
 ## Sibling Repositories
 The core ecosystem is decoupled across distinct, agnostic portfolio repositories:
-* **Core Flag Engine (Go):** [flagship](https://github.com/NGUgeneral/flagship)
+* **Core Flag Engine (Go):** [headsntails-core](https://github.com/NGUgeneral/headsntails-core)
 * **Auth Authority (Python/FastAPI):** [jwt-authority](https://github.com/NGUgeneral/jwt-authority)
 * **Rate Limiter (Python/FastAPI):** [rate-limiter](https://github.com/NGUgeneral/rate-limiter)
 
@@ -56,10 +56,10 @@ The core ecosystem is decoupled across distinct, agnostic portfolio repositories
 Ensure your local development environment has a parent workspace folder containing all four repositories pulled down side-by-side as siblings:
 ```text
 workspace/
-├── flagship/
+├── headsntails-core/
 ├── rate-limiter/
 ├── jwt-authority/
-└── flagship-platform/  <-- You are here
+└── headsntails-platform/  <-- You are here
 ```
 
 ### Spinning Up the Stack
