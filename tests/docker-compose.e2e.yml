@@ -1,0 +1,100 @@
+networks:
+  headsntails-mesh:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: headsntails_auth_test
+    volumes:
+      - ../init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - headsntails-mesh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d headsntails_auth_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - headsntails-mesh
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  rate-limiter:
+    build:
+      context: ../../rate-limiter
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    networks:
+      - headsntails-mesh
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  jwt-authority:
+    build:
+      context: ../../jwt-authority
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://test_user:test_password@postgres:5432/headsntails_auth_test?sslmode=disable
+      - TOKEN_ISSUER_SECRET=test_issuer_secret_key_123!
+      - JWT_SECRET_KEY=test_jwt_signing_secret_key_456!
+      - APP_ENV=local
+    networks:
+      - headsntails-mesh
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  headsntails-core:
+    build:
+      context: ../../headsntails-core
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASSWORD=
+      - RATE_LIMITER_URL=http://rate-limiter:8000
+      - JWT_SECRET_KEY=test_jwt_signing_secret_key_456!
+    networks:
+      - headsntails-mesh
+    depends_on:
+      redis:
+        condition: service_healthy
+      rate-limiter:
+        condition: service_started
+
+  # --- THE PLATFORM RUNNER GATEWAY ---
+  headsntails-platform:
+    image: nginx:1.25-alpine
+    entrypoint: >
+      sh -c "echo 'events { worker_connections 1024; } http { server { listen 80; location / { proxy_pass http://headsntails-core:8080; } } }' > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    ports:
+      - "80:80"
+    networks:
+      - headsntails-mesh
+    depends_on:
+      jwt-authority:
+        condition: service_started
+      headsntails-core:
+        condition: service_started
+
+  # --- EPHEMERAL E2E INTEGRATION ENGINE ---
+  e2e-tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    networks:
+      - headsntails-mesh
+    depends_on:
+      headsntails-platform:
+        condition: service_started
