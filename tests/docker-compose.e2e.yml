@@ -1,3 +1,5 @@
+version: '3.8'
+
 networks:
   headsntails-mesh:
     driver: bridge
@@ -30,9 +32,7 @@ services:
       retries: 10
 
   rate-limiter:
-    build:
-      context: ../../rate-limiter
-      dockerfile: Dockerfile
+    image: ghcr.io/ngugeneral/rate-limiter:latest
     environment:
       - REDIS_URL=redis://redis:6379/0
     networks:
@@ -42,9 +42,7 @@ services:
         condition: service_healthy
 
   jwt-authority:
-    build:
-      context: ../../jwt-authority
-      dockerfile: Dockerfile
+    image: ghcr.io/ngugeneral/jwt-authority:latest
     environment:
       - DATABASE_URL=postgresql://test_user:test_password@postgres:5432/headsntails_auth_test?sslmode=disable
       - TOKEN_ISSUER_SECRET=test_issuer_secret_key_123!
@@ -57,9 +55,7 @@ services:
         condition: service_healthy
 
   headsntails-core:
-    build:
-      context: ../../headsntails-core
-      dockerfile: Dockerfile
+    image: ghcr.io/ngugeneral/headsntails-core:latest
     environment:
       - REDIS_ADDR=redis:6379
       - REDIS_PASSWORD=
