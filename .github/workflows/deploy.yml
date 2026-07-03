@@ -51,4 +51,4 @@ jobs:
 
     - name: Compile Cloud-Agnostic Production Gateway Image
       run: |
-        docker build -t headsntails-platform:latest .
+        docker build -t headsntails-platform:latest -f tests/Dockerfile.e2e tests/
