@@ -1,0 +1,16 @@
+FROM python:3.12-alpine
+
+# Set the operational workspace
+WORKDIR /suite
+
+# Install dependencies into the image layer so they are cached permanently
+RUN pip install --no-cache-dir \
+    pytest==9.1.1 \
+    httpx==0.27.0 \
+    pyjwt[crypto]==2.8.0
+
+# Copy the actual test script files into the image context
+COPY test_platform_e2e.py /suite/
+
+# Configure the default executable target runner
+CMD ["python", "-m", "pytest", "-v", "test_platform_e2e.py"]
