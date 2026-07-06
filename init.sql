@@ -12,3 +12,14 @@ CREATE TABLE IF NOT EXISTS public.jwt_auth_sessions (
 
 CREATE INDEX IF NOT EXISTS idx_auth_sessions_hash 
 ON public.jwt_auth_sessions using btree (token_hash);
+
+CREATE TABLE IF NOT EXISTS public.feature_flags (
+    service VARCHAR(100) NOT NULL,
+    key VARCHAR(100) NOT NULL,
+    value BOOLEAN NOT NULL DEFAULT FALSE,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    CONSTRAINT feature_flags_pkey PRIMARY KEY (service, key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_feature_flags_service 
+ON public.feature_flags (service);
