@@ -39,8 +39,9 @@ The `headsntails` ecosystem is built using a milestone-driven evolution layout. 
 | **v0.3** | **Sidecar Latency Optimization** | gRPC Communication Layer | Migrate inter-service checks to gRPC to eliminate HTTP/1.1 HoL blocking | *In Progress* |
 | **v0.4** | **High-Perf Edge Layer** | Global gRPC Ingress | Transition public edge routing to utilize Protocol Buffers & HTTP/2 streaming | *Planned* |
 | **v0.5** | **Advanced Targeting Engine**| Contextual Flag Evaluation | Abstract rule-matching evaluation engines beyond simple primitives | *Planned* |
-| **v0.6** | **Distributed Event Bus** | Real-Time Cache Sync | Integrate RabbitMQ/Kafka to synchronize cache states across cross-region nodes | *Planned* |
+| **v0.6** | **Dashboard**| Implement dedicated flags dashboard | React frontend application running ngnix as webserve | *Planned* |
 | **v0.7** | **Cloud-Native Scale** | Infrastructure as Code | Multi-AZ AWS ECS Fargate deployment automated via Terraform | *Planned* |
+| **v0.8** | **Distributed Event Bus** | Real-Time Cache Sync | Integrate RabbitMQ/Kafka to synchronize cache states across cross-region nodes | *Planned* |
 
 ---
 
