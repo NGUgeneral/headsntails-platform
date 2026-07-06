@@ -10,13 +10,13 @@ services:
     environment:
       POSTGRES_USER: test_user
       POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: headsntails_auth_test
+      POSTGRES_DB: headsntails_db
     volumes:
       - ../init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - headsntails-mesh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U test_user -d headsntails_auth_test"]
+      test: ["CMD-SHELL", "pg_isready -U test_user -d headsntails_db"]
       interval: 2s
       timeout: 2s
       retries: 10
@@ -44,7 +44,7 @@ services:
   jwt-authority:
     image: ghcr.io/ngugeneral/jwt-authority:latest
     environment:
-      - DATABASE_URL=postgresql://test_user:test_password@postgres:5432/headsntails_auth_test?sslmode=disable
+      - DATABASE_URL=postgresql://test_user:test_password@postgres:5432/headsntails_db?sslmode=disable
       - TOKEN_ISSUER_SECRET=test_issuer_secret_key_123!
       - JWT_SECRET_KEY=test_jwt_signing_secret_key_456!
       - APP_ENV=local
@@ -59,12 +59,19 @@ services:
     environment:
       - REDIS_ADDR=redis:6379
       - REDIS_PASSWORD=
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=test_user
+      - DB_PASS=test_password
+      - DB_NAME=headsntails_db
       - RATE_LIMITER_URL=http://rate-limiter:8000
       - JWT_SECRET_KEY=test_jwt_signing_secret_key_456!
     networks:
       - headsntails-mesh
     depends_on:
       redis:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
       rate-limiter:
         condition: service_started
