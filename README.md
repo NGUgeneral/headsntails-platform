@@ -35,8 +35,8 @@ The `headsntails` ecosystem is built using a milestone-driven evolution layout. 
 | Phase | Milestone | Core Focus | Architecture Impact | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **v0.1** | **Container Monolith Base** | Orchestrated REST Core | Edge Ingress routing, multi-language container isolation | **Released** |
-| **v0.2** | **Source of Truth & Hydration** | Reliable State Handling | Write-Through pattern to PostgreSQL; ultra-fast reads from Redis | *In Progress* |
-| **v0.3** | **Sidecar Latency Optimization** | gRPC Communication Layer | Migrate inter-service checks to gRPC to eliminate HTTP/1.1 HoL blocking | *Planned* |
+| **v0.2** | **Source of Truth & Hydration** | Reliable State Handling | Write-Through pattern to PostgreSQL; ultra-fast reads from Redis | **Released** |
+| **v0.3** | **Sidecar Latency Optimization** | gRPC Communication Layer | Migrate inter-service checks to gRPC to eliminate HTTP/1.1 HoL blocking | *In Progress* |
 | **v0.4** | **High-Perf Edge Layer** | Global gRPC Ingress | Transition public edge routing to utilize Protocol Buffers & HTTP/2 streaming | *Planned* |
 | **v0.5** | **Advanced Targeting Engine**| Contextual Flag Evaluation | Abstract rule-matching evaluation engines beyond simple primitives | *Planned* |
 | **v0.6** | **Distributed Event Bus** | Real-Time Cache Sync | Integrate RabbitMQ/Kafka to synchronize cache states across cross-region nodes | *Planned* |
