@@ -33,7 +33,7 @@ def test_end_to_end_platform_issuance_flow():
 	payload = {"audience": "headsntails-core"}
 	
 	async_client = httpx.Client()
-	token_response = async_client.post(f"{AUTH_INTERNAL_URL}/api/v1/token", json=payload, headers=headers)
+	token_response = async_client.post(f"{AUTH_INTERNAL_URL}/api/v1/auth/token", json=payload, headers=headers)
 	assert token_response.status_code == 200
 	tokens = token_response.json()
 	
