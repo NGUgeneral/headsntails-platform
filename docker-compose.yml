@@ -50,12 +50,14 @@ services:
       dockerfile: Dockerfile
     environment:
       - DB_HOST=postgres
-      - DB_PORT=${POSTGRES_PORT}
+      - DB_PORT=5432
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
 
       - RATE_LIMITER_URL=${RATE_LIMITER_INTERNAL_URL}
       - JWT_SECRET_KEY=${LOCAL_JWT_SECRET}
+      - RATE_LIMITER_GRPC_URL=rate-limiter:50051
+      - RATE_LIMITER_GRPC_CALL=${RATE_LIMITER_GRPC_CALL}
 
       # =========================================================================
       # REDIS ALIGNMENT MATRIX
@@ -84,6 +86,7 @@ services:
       - REDIS_URL=redis://${REDIS_HOST}:${REDIS_PORT}/0
     ports:
       - "8000:8000"
+      - "50051:50051"
     networks:
       - headsntails-mesh
     depends_on:
