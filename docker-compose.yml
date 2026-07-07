@@ -119,3 +119,15 @@ services:
       - headsntails-core
       - jwt-authority
     restart: always
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:v5.17.14
+    container_name: headsntails-swagger-ui
+    environment:
+      URLS: "[
+          { url: '/docs/specs/headsntails-core.json', name: 'Flags (Core)' },
+          { url: '/docs/specs/jwt-authority.json', name: 'JWT Authority' }
+        ]"
+      SUPPORTED_SUBMIT_METHODS: '["get", "post", "put", "delete"]'
+    networks:
+      - headsntails-mesh
