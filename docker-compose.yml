@@ -12,10 +12,11 @@ services:
     container_name: headsntails-postgres
     env_file:
       - .env
+    # environment maps directly to host env, allowing production fallback overrides smoothly
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -53,15 +54,15 @@ services:
       - DB_PORT=5432
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
+      - JWT_SECRET_KEY=${LOCAL_JWT_SECRET}
 
       - RATE_LIMITER_URL=${RATE_LIMITER_INTERNAL_URL}
-      - JWT_SECRET_KEY=${LOCAL_JWT_SECRET}
-      - RATE_LIMITER_GRPC_URL=rate-limiter:50051
-      - RATE_LIMITER_GRPC_CALL=${RATE_LIMITER_GRPC_CALL}
+      - RATE_LIMITER_GRPC_URL=${RATE_LIMITER_GRPC_URL}
+      - RATE_LIMITER_USE_GRPC=${RATE_LIMITER_USE_GRPC}
+      - RATE_LIMITER_HTTP_TIMEOUT_MS=${RATE_LIMITER_HTTP_TIMEOUT_MS}
+      - TOKEN_BASED_RATE_LIMIT=${TOKEN_BASED_RATE_LIMIT}
+      - TOKEN_BASED_RATE_LIMIT_WINDOW=${TOKEN_BASED_RATE_LIMIT_WINDOW}
 
-      # =========================================================================
-      # REDIS ALIGNMENT MATRIX
-      # =========================================================================
       - REDIS_ADDR=redis:6379
       - REDIS_PASSWORD=
     ports:
@@ -83,7 +84,8 @@ services:
       sh -c "pip install -r requirements.txt && 
              uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4"
     environment:
-      - REDIS_URL=redis://${REDIS_HOST}:${REDIS_PORT}/0
+      - REDIS_URL=redis://redis:6379/0
+      - DEFAULT_IP_LIMIT=${RATE_LIMITER_IP_LIMIT}
     ports:
       - "8000:8000"
       - "50051:50051"
@@ -108,7 +110,7 @@ services:
 
   nginx-gateway:
     image: nginx:1.25-alpine
-    container_name: nginx-gateway
+    container_name: headsntails-nginx-gateway
     ports:
       - "80:80"
     volumes:
@@ -131,3 +133,15 @@ services:
       SUPPORTED_SUBMIT_METHODS: '["get", "post", "put", "delete"]'
     networks:
       - headsntails-mesh
+
+  fortio-bench:
+    image: fortio/fortio:latest
+    container_name: headsntails-fortio-bench
+    ports:
+      - "8070:8082"
+    entrypoint: ["fortio", "server", "-http-port", "8082"]
+    networks:
+      - headsntails-mesh
+    depends_on:
+      - nginx-gateway
+      - headsntails-core
