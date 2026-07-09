@@ -46,6 +46,12 @@ The `headsntails` ecosystem is built using a milestone-driven evolution layout. 
 
 ---
 
+## Documentation
+
+Full openapi documentation, for all public facing services is implemented in `/docs`
+
+---
+
 ## Sibling Repositories
 The core ecosystem is decoupled across distinct, agnostic portfolio repositories:
 * **Core Flag Engine (Go):** [headsntails-core](https://github.com/NGUgeneral/headsntails-core)
